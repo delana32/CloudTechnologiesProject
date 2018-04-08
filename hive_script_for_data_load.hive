@@ -1,0 +1,8 @@
+CREATE DATABASE userdb;
+
+USE userdb;
+
+CREATE TABLE kickstarter_data (backers_count INT, blurb STRING, category STRING, converted_pledged_amount DOUBLE, country STRING, creation_ts STRING, creator STRING, creator_id INT, currency STRING, current_currency STRING, deadline_ts STRING, fx_rate DOUBLE, goal DOUBLE, id INT, launched_ts STRING, name STRING, pledged DOUBLE, state STRING, state_changed_ts STRING, static_usd_rate DOUBLE, usd_pledged DOUBLE, usd_type STRING, location_name STRING, location_country STRING, location_state STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+LOAD DATA LOCAL INPATH 'Results'  INTO TABLE kickstarter_data;
+ 
