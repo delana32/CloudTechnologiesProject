@@ -118,6 +118,9 @@ A47= LOAD 'Kickstarter047.csv' USING org.apache.pig.piggybank.storage.CSVExcelSt
 
 A48= LOAD 'Kickstarter048.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',','YES_MULTILINE', 'UNIX', 'SKIP_INPUT_HEADER') AS (backers_count:int,blurb:chararray,category:chararray,converted_pledged_amount:double,country:chararray,created_at:long,creator:chararray,currency:chararray,currency_symbol:chararray,currency_trailing_code:chararray,current_currency:chararray,deadline:long,disable_communication:chararray,fx_rate:int,goal:double,id:int,is_starrable:chararray,launched_at:long,name:chararray,photo:chararray,pledged:chararray,profile:chararray,slug,source_url:chararray,spotlight:chararray,staff_pick:chararray,state:chararray,state_changed_at:long,static_usd_rate:chararray,urls:chararray,usd_pledged:chararray,usd_type:chararray,location:chararray,friends:chararray,is_backing:chararray,is_starred:chararray,permissions:chararray);
 
+
+
+
 U1 = UNION A1, A2;
 U2 = UNION U1, A3;
 U3 = UNION U2, A4;
@@ -175,10 +178,10 @@ U48_DATES = FOREACH U48 GENERATE backers_count, blurb, category, converted_pledg
 U48_JSON = FOREACH U48_DATES GENERATE backers_count, blurb, JsonStringToMap(category) AS CATEGORY,converted_pledged_amount,country,creation_ts, JsonStringToMap(creator) as CREATOR, currency, current_currency, deadline_ts, fx_rate, goal, id, launched_ts, name, pledged, state, state_changed_ts, static_usd_rate, usd_pledged,usd_type,JsonStringToMap(location) as LOCATION;
 
 
-U48_CATEGORY = FOREACH U48_JSON GENERATE backers_count,blurb,  CATEGORY#'name' as category, converted_pledged_amount, country, creation_ts, CREATOR#'name' as creator, CREATOR#'id' as creator_id, currency, current_currency, deadline_ts, fx_rate, goal, id, launched_ts, name, pledged, state, state_changed_ts, static_usd_rate, usd_pledged, usd_type, LOCATION#'name' as location ;
+U48_CATEGORY = FOREACH U48_JSON GENERATE backers_count,blurb,  CATEGORY#'name' as category, converted_pledged_amount, country, creation_ts, CREATOR#'name' as creator, CREATOR#'id' as creator_id, currency, current_currency, deadline_ts, fx_rate, goal, id, launched_ts, name, pledged, state, state_changed_ts, static_usd_rate, usd_pledged, usd_type, LOCATION#'name' as location_name, LOCATION#'country' as location_country, LOCATION#'state' as location_state ;
 
 
-U48_group = GROUP U48_CATEGORY ALL;
-COUNT_U48 = FOREACH U48_group GENERATE COUNT(U48_CATEGORY);
-DUMP COUNT_U48;
---STORE A1_CATEGORY INTO 'Results' using PigStorage(',');
+--U48_group = GROUP U48_CATEGORY ALL;
+--COUNT_U48 = FOREACH U48_group GENERATE COUNT(U48_CATEGORY);
+--DUMP COUNT_U48;
+STORE U48_CATEGORY INTO 'Results' using PigStorage(',');
