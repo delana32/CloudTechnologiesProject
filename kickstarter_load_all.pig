@@ -181,7 +181,9 @@ U48_JSON = FOREACH U48_DATES GENERATE backers_count, blurb, JsonStringToMap(cate
 U48_CATEGORY = FOREACH U48_JSON GENERATE backers_count,blurb,  CATEGORY#'name' as category, converted_pledged_amount, country, creation_ts, CREATOR#'name' as creator, CREATOR#'id' as creator_id, currency, current_currency, deadline_ts, fx_rate, goal, id, launched_ts, name, pledged, state, state_changed_ts, static_usd_rate, usd_pledged, usd_type, LOCATION#'name' as location_name, LOCATION#'country' as location_country, LOCATION#'state' as location_state ;
 
 
---U48_group = GROUP U48_CATEGORY ALL;
---COUNT_U48 = FOREACH U48_group GENERATE COUNT(U48_CATEGORY);
+final = FOREACH U48_CATEGORY GENERATE backers_count, REPLACE(REPLACE(blurb,'\n',''),',','') AS blurb, category, converted_pledged_amount, country, creation_ts,creator, creator_id, currency, current_currency, deadline_ts, fx_rate, goal, id, launched_ts, name, pledged, state, state_changed_ts, static_usd_rate, usd_pledged, usd_type, location_name, location_country, location_state;
+
+--U48_group = GROUP final ALL;
+--COUNT_U48 = FOREACH U48_group GENERATE COUNT(final);
 --DUMP COUNT_U48;
-STORE U48_CATEGORY INTO 'Results' using PigStorage(',');
+STORE final INTO 'Results' using PigStorage(',');
